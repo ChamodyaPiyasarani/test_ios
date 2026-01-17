@@ -1,10 +1,3 @@
-//
-//  first_appApp.swift
-//  first_app
-//
-//  Created by cobsccomp242p-030 on 2026-01-10.
-//
-
 import SwiftUI
 
 @main
