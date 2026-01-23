@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainMenuView: View {
-    @StateObject private var authViewModel = AuthViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showGameView = false
     @State private var selectedMode: GameMode?
     @State private var showLeaderboard = false
@@ -9,14 +9,15 @@ struct MainMenuView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.ignoresSafeArea()
+                Color(UIColor.systemBackground)
+                    .ignoresSafeArea()
                 
                 VStack(spacing: 30) {
                     // Header
                     HStack {
                         Text("Color Memory")
                             .font(.largeTitle)
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                             .bold()
                         
                         Spacer()
@@ -24,7 +25,7 @@ struct MainMenuView: View {
                         if authViewModel.isLoggedIn {
                             Button(action: { showLeaderboard = true }) {
                                 Image(systemName: "trophy")
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.primary)
                                     .font(.title2)
                             }
                         }
@@ -32,27 +33,30 @@ struct MainMenuView: View {
                     .padding()
                     
                     if authViewModel.isLoggedIn, let user = authViewModel.currentUser {
-                        // Welcome Message
+                        // Welcome Message with High Scores
                         VStack {
                             Text("Welcome, \(user.username)!")
                                 .font(.title2)
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                             
                             Text("High Scores")
                                 .font(.headline)
-                                .foregroundColor(.gray)
+                                .foregroundColor(.secondary)
                                 .padding(.top, 5)
                             
+                            // High Scores Display
                             HStack(spacing: 20) {
                                 ForEach(GameMode.allCases, id: \.self) { mode in
                                     VStack {
                                         Text(mode.rawValue)
                                             .font(.caption)
-                                            .foregroundColor(.gray)
-                                        Text("\(user.highScore(for: mode))")
+                                            .foregroundColor(.secondary)
+                                        Text("\(getHighScore(for: mode, user: user))")
                                             .font(.title3)
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.primary)
+                                            .fontWeight(.bold)
                                     }
+                                    .frame(width: 80)
                                 }
                             }
                             .padding(.top, 10)
@@ -88,15 +92,15 @@ struct MainMenuView: View {
                         VStack(spacing: 20) {
                             Text("Please login to play")
                                 .font(.title2)
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                             
                             Button(action: { authViewModel.showLogin = true }) {
                                 Text("Login / Register")
                                     .font(.headline)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.white)
+                                    .background(Color.blue)
                                     .cornerRadius(10)
                             }
                             .padding(.horizontal, 40)
@@ -107,9 +111,9 @@ struct MainMenuView: View {
                     
                     // Settings Button
                     if authViewModel.isLoggedIn {
-                        NavigationLink(destination: SettingsView()) {
+                        NavigationLink(destination: SettingsView().environmentObject(authViewModel)) {
                             Image(systemName: "gear")
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                                 .font(.title2)
                                 .padding()
                         }
@@ -124,7 +128,11 @@ struct MainMenuView: View {
                 LeaderboardView()
             }
         }
-        .preferredColorScheme(authViewModel.currentUser?.isDarkMode == true ? .dark : .light)
+        .preferredColorScheme(authViewModel.colorScheme)
+    }
+    
+    private func getHighScore(for mode: GameMode, user: User) -> Int {
+        return user.highScores[mode.rawValue] ?? 0
     }
 }
 
@@ -136,21 +144,25 @@ struct DifficultyButton: View {
             VStack(alignment: .leading) {
                 Text(mode.rawValue)
                     .font(.title2)
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                 Text(difficultyDescription)
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
             }
             
             Spacer()
             
             Image(systemName: "play.circle.fill")
-                .foregroundColor(.white)
+                .foregroundColor(.primary)
                 .font(.title2)
         }
         .padding()
-        .background(Color.gray.opacity(0.2))
+        .background(Color(UIColor.secondarySystemBackground))
         .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
     }
     
     private var difficultyDescription: String {

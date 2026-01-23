@@ -7,7 +7,6 @@ class GameManager {
         let pairsNeeded = mode.initialCards + (level - 1)
         
         if mode == .hard {
-            // For hard mode, use shapes
             let availableShapes = GameCard.shapes.shuffled()
             let selectedShapes = Array(availableShapes.prefix(pairsNeeded))
             
@@ -17,7 +16,6 @@ class GameManager {
                 cards.append(contentsOf: [card1, card2])
             }
         } else {
-            // For easy and medium modes, use colors
             let availableColors = GameCard.colors.shuffled()
             let selectedColors = Array(availableColors.prefix(pairsNeeded))
             

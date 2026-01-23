@@ -7,7 +7,6 @@ class StorageService {
     private enum Keys {
         static let currentUser = "currentUser"
         static let allUsers = "allUsers"
-        // Removed savedGameState since we don't save game state
     }
     
     func saveCurrentUser(_ user: User?) {
@@ -71,10 +70,14 @@ class StorageService {
     
     func updateHighScore(for user: User, mode: GameMode, score: Int) -> User {
         var updatedUser = user
-        if score > updatedUser.highScore(for: mode) {
-            updatedUser.setHighScore(score, for: mode)
+        let currentHighScore = updatedUser.highScores[mode.rawValue] ?? 0
+        
+        if score > currentHighScore {
+            updatedUser.highScores[mode.rawValue] = score
             saveUser(updatedUser)
+            print("New high score saved for \(mode.rawValue): \(score)")
         }
+        
         return updatedUser
     }
     

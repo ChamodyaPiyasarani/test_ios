@@ -7,12 +7,12 @@ struct LoginView: View {
     
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            AppColors.backgroundColor.ignoresSafeArea()
             
             VStack(spacing: 30) {
                 Text("Welcome")
                     .font(.largeTitle)
-                    .foregroundColor(.white)
+                    .foregroundColor(AppColors.textColor)
                     .bold()
                 
                 TextField("Enter username", text: $username)
@@ -24,10 +24,10 @@ struct LoginView: View {
                 Button(action: login) {
                     Text("Continue")
                         .font(.headline)
-                        .foregroundColor(.black)
+                        .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white)
+                        .background(Color.blue)
                         .cornerRadius(10)
                 }
                 .padding(.horizontal, 40)
@@ -38,7 +38,7 @@ struct LoginView: View {
                     VStack {
                         Text("Existing Users")
                             .font(.headline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(AppColors.secondaryTextColor)
                             .padding(.bottom, 10)
                         
                         ScrollView {
@@ -50,14 +50,18 @@ struct LoginView: View {
                                     }) {
                                         HStack {
                                             Text(user.username)
-                                                .foregroundColor(.white)
+                                                .foregroundColor(AppColors.textColor)
                                             Spacer()
                                             Image(systemName: "person.circle")
-                                                .foregroundColor(.gray)
+                                                .foregroundColor(AppColors.secondaryTextColor)
                                         }
                                         .padding()
-                                        .background(Color.gray.opacity(0.2))
+                                        .background(AppColors.cardBackground)
                                         .cornerRadius(8)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(AppColors.borderColor, lineWidth: 1)
+                                        )
                                     }
                                 }
                             }
@@ -71,6 +75,7 @@ struct LoginView: View {
             }
             .padding(.top, 50)
         }
+        .preferredColorScheme(authViewModel.colorScheme)
     }
     
     private func login() {

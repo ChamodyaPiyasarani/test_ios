@@ -1,6 +1,5 @@
 import Foundation
 
-// GameState is NOT Codable - it's only for runtime game state
 struct GameState {
     var score: Int
     var level: Int

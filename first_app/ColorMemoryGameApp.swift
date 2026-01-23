@@ -8,19 +8,23 @@ struct ColorMemoryGameApp: App {
         WindowGroup {
             MainMenuView()
                 .environmentObject(authViewModel)
+                .preferredColorScheme(authViewModel.colorScheme)
                 .onAppear {
-                    // Set initial color scheme
-                    updateColorScheme()
+                    applyColorScheme()
                 }
                 .onChange(of: authViewModel.currentUser?.isDarkMode) { _ in
-                    updateColorScheme()
+                    applyColorScheme()
                 }
         }
     }
     
-    private func updateColorScheme() {
-        // This ensures the color scheme updates throughout the app
-        UIApplication.shared.windows.first?.overrideUserInterfaceStyle =
-            authViewModel.currentUser?.isDarkMode == true ? .dark : .light
+    private func applyColorScheme() {
+        DispatchQueue.main.async {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                for window in windowScene.windows {
+                    window.overrideUserInterfaceStyle = authViewModel.currentUser?.isDarkMode == true ? .dark : .light
+                }
+            }
+        }
     }
 }

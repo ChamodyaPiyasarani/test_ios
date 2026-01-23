@@ -3,7 +3,7 @@ import Foundation
 struct User: Codable, Identifiable {
     let id: UUID
     var username: String
-    var highScores: [String: Int] // Use String instead of GameMode as key
+    var highScores: [String: Int]
     var isDarkMode: Bool
     
     init(username: String) {
@@ -17,7 +17,6 @@ struct User: Codable, Identifiable {
         self.isDarkMode = false
     }
     
-    // Helper methods to work with GameMode enum
     func highScore(for mode: GameMode) -> Int {
         return highScores[mode.rawValue] ?? 0
     }

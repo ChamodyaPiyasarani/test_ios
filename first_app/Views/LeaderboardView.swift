@@ -6,14 +6,14 @@ struct LeaderboardView: View {
     
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            AppColors.backgroundColor.ignoresSafeArea()
             
             VStack {
                 // Header
                 HStack {
                     Button(action: { presentationMode.wrappedValue.dismiss() }) {
                         Image(systemName: "xmark")
-                            .foregroundColor(.white)
+                            .foregroundColor(AppColors.textColor)
                             .font(.title2)
                     }
                     
@@ -21,11 +21,10 @@ struct LeaderboardView: View {
                     
                     Text("Leaderboard")
                         .font(.title)
-                        .foregroundColor(.white)
+                        .foregroundColor(AppColors.textColor)
                     
                     Spacer()
                     
-                    // Invisible spacer for centering
                     Image(systemName: "xmark")
                         .font(.title2)
                         .opacity(0)
@@ -40,6 +39,7 @@ struct LeaderboardView: View {
                 .listStyle(PlainListStyle())
             }
         }
+        .preferredColorScheme(.dark) // Keep leaderboard in dark theme for visibility
         .onAppear {
             loadLeaderboardData()
         }
@@ -69,19 +69,19 @@ struct LeaderboardRow: View {
         HStack {
             Text("\(entry.rank)")
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(AppColors.textColor)
                 .frame(width: 30)
             
             VStack(alignment: .leading) {
                 Text(entry.user.username)
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(AppColors.textColor)
                 
                 HStack {
                     ForEach(GameMode.allCases, id: \.self) { mode in
                         Text("\(mode.rawValue.prefix(1)):\(entry.user.highScore(for: mode))")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(AppColors.secondaryTextColor)
                             .padding(.horizontal, 4)
                     }
                 }
@@ -94,5 +94,7 @@ struct LeaderboardRow: View {
                 .foregroundColor(.yellow)
         }
         .padding(.vertical, 8)
+        .background(AppColors.cardBackground)
+        .cornerRadius(8)
     }
 }
